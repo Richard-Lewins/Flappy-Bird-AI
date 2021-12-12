@@ -1,4 +1,3 @@
-//uwu
 class connectionGene{
     constructor(fromNode,toNode,weight,innovationNumber){
         this.fromNode = fromNode;
