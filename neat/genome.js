@@ -256,7 +256,7 @@ class genome{
             newGenome.nodeGenes.push(this.nodeGenes[i].clone());
         }
 
-        for(let i = 0;i < this.nodeGenes.length;i++){
+        for(let i = 0;i < newGenome.nodeGenes.length;i++){
             //For each of the connections connected to each of the nodes
             for(let ii = 0; ii < newGenome.nodeGenes[i].connections.length;ii++){
                 //Find new nodeGene that matches fromGenome of the connection, and create connection using that nodeGene
@@ -269,6 +269,15 @@ class genome{
                 let newConnection = new connectionGene(newGenome.nodeGenes[i],toNode,newGenome.nodeGenes[i].connections[ii].weight,newGenome.nodeGenes[i].connections[ii].innovationNumber);
                 newConnection.enabled = newGenome.nodeGenes[i].connections[ii].enabled;
                 newGenome.connectionGenes.push(newConnection);
+            }
+        }
+
+        //Set oldConnection of the each node in newGenome to be the same as this oldconnection
+        for(let i = 0;i < newGenome.nodeGenes.length;i++){
+            for(let ii = 0;ii < newGenome.connectionGenes.length;ii++){
+                if(newGenome.connectionGenes[ii].innovationNumber == this.nodeGenes[i].oldConnection.innovationNumber){
+                    newGenome.nodeGenes[i].oldConnection = newGenome.connectionGenes[ii];
+                }
             }
         }
         newGenome.layers = this.layers;
