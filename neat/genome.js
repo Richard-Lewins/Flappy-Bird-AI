@@ -246,6 +246,38 @@ class genome{
             this.orderedByLayers.push(layer);
         }
     }
+
+    clone(){
+        let newGenome = new genome(this.inputs,this.outputs);
+        newGenome.nodeGenes = [];
+        newGenome.connectionGenes = [];
+        //Add nodeGenes array to new genome
+        for(let i = 0;i < this.nodeGenes.length;i++){
+            newGenome.nodeGenes.push(this.nodeGenes[i].clone());
+        }
+
+        for(let i = 0;i < this.nodeGenes.length;i++){
+            //For each of the connections connected to each of the nodes
+            for(let ii = 0; ii < newGenome.nodeGenes[i].connections.length;ii++){
+                //Find new nodeGene that matches fromGenome of the connection, and create connection using that nodeGene
+                let toNode = null;
+                for(let iii=0;iii < newGenome.nodeGenes.length; iii++){
+                    if (newGenome.nodeGenes[iii].nodeId == newGenome.nodeGenes[i].connections[ii].toNode.nodeId){
+                        toNode = newGenome.nodeGenes[iii]
+                    }
+                }
+                let newConnection = new connectionGene(newGenome.nodeGenes[i],toNode,newGenome.nodeGenes[i].connections[ii].weight,newGenome.nodeGenes[i].connections[ii].innovationNumber);
+                newConnection.enabled = newGenome.nodeGenes[i].connections[ii].enabled;
+                newGenome.connectionGenes.push(newConnection);
+            }
+        }
+        newGenome.layers = this.layers;
+        newGenome.currentNodeId = this.currentNodeId;
+        return newGenome;
+        
+    }
+
+
     //Genome drawing
     draw_line(context, fromx, fromy, tox, toy,width,colour) {
 
@@ -262,18 +294,18 @@ class genome{
     setup(canvas,radius){
         this.canvas = canvas;
         this.radius = radius;
-        let inputX =  20 + radius; //20 From Front
-        let outputX = canvas.width - radius - 20; //20 From Back
+        this.inputX =  20 + radius; //20 From Front
+        this.outputX = canvas.width - radius - 20; //20 From Back
         
     //input and bias
         for(let i = 0; i <= this.inputs;i++){
             this.nodeGenes[i].y = (i+1) * (canvas.height/(this.inputs + 2));
-            this.nodeGenes[i].x = inputX; //20 from edge
+            this.nodeGenes[i].x = this.inputX; //20 from edge
         }
         
         for(let i = 0; i < this.outputs;i++){
             this.nodeGenes[i + this.inputs + 1].y = (i+1) * (canvas.height/(this.outputs + 1));
-            this.nodeGenes[i + this.inputs + 1].x = outputX; 
+            this.nodeGenes[i + this.inputs + 1].x = this.outputX; 
         }
     }     
 

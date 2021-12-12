@@ -3,7 +3,7 @@ class nodeGene{
         this.layer = layer; //To prevent recursion
         this.nodeId = nodeId;
         this.inputValue = 0; //Sum of all inputs
-        this.connections = []; //List of connections that come our of this node (OutputConnections)
+        this.connections = []; //List of connections that come our of this node (Initialized with genome.updateNodeConnections())
 
         //For drawing Genome to screen
         this.oldConnection = connectionGene;
@@ -31,4 +31,9 @@ class nodeGene{
         }
     }
     //Todo: Clone and isConnectedTo
+    clone(){
+        let newNode = new nodeGene(this.layer,this.nodeId);
+        newNode.connections = this.connections;
+        return newNode;
+    }
 }
