@@ -286,6 +286,38 @@ class genome{
         
     }
 
+//Assuming that this is the more fit Genome parent1 = this,parent2 = parentGenome2
+    crossOver(parentGenome2){
+        let babyGenome = this.clone();
+
+        //Keep the topology of the most fit parent(this), but 50% use weights of parent1, 50% parent2, if connection shares innovationNumber
+        for(let i = 0;i < babyGenome.connectionGenes.length;i++){
+
+            //See if parentGenome2 has matching connection
+            for(let ii = 0;ii < parentGenome2.connectionGenes.length;ii++){
+                if(babyGenome.connectionGenes[i].innovationNumber == parentGenome2.connectionGenes[ii].innovationNumber){
+                    let rand = Math.random();
+                    if (rand >0.5){
+                        console.log("lol")
+                        babyGenome.connectionGenes[i].weight = parentGenome2.connectionGenes[ii].weight;
+                    }
+                }
+            }
+        }
+
+        return babyGenome;
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     //Genome drawing
     draw_line(context, fromx, fromy, tox, toy,width,colour) {
