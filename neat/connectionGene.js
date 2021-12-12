@@ -45,10 +45,5 @@ class connectionGene{
 
     //ToDo: areTwoNodesConnected() -Check if two nodes have connection in between
 
-    clone(){
-        let newConnection = new connectionGene(this.fromNode,this.fromNode,this.weight,this.innovationNumber);
-        newConnection.enabled = this.enabled;
-        return newConnection;
-    }
 }
 
