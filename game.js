@@ -1,9 +1,3 @@
-/*var cvs = document.getElementById("FlappyCanvas");     
-    <canvas id="FlappyCanvas" width="350" height="500"></canvas>
-    <script src="game.js"></script> 
-    <style> canvas{ border: 1px solid black; }</style> 
-    
-    //Canvas Variable */
 
 var cvs = document.createElement("canvas");
 cvs.id = "FlappyCanvas";
@@ -54,15 +48,8 @@ var positionOfFloor = 0; //So that floor appears as if it's moving
 var floorHeight = 30;
 
 //Bird Variables
-var birdX = 50;
-var birdY = 50;
-var birdWidth = 58/2;
-var birdHeight = 40/2;
+let newPlayer = new player();
 
-
-//Other Variables
-var gravity = 0.25;
-var birdVelocity = 0;
 var gameOver = false;
 
 function drawPipes(){
@@ -100,50 +87,19 @@ function drawFloor(){
     }
 }
 
-function drawBird(){
-    ctx.drawImage(imgBird,birdX,birdY,birdWidth,birdHeight);
-    birdVelocity += gravity;
-    if(birdVelocity >= 15)
-        birdVelocity = 15;//Sets maximum velocity to 15
-    birdY += birdVelocity; 
 
-    let closestPipe = pipes[0];
-    for(let i = 0;i < pipes.length;i++){
-        if (closestPipe.x < this.birdX || (pipes[i].x < closestPipe.x && pipes[i].x > this.birdX)){ 
-            closestPipe = pipes[i];
-        }
-    }
-
-}
 
 document.addEventListener("keydown",handleKeyDown);
 function handleKeyDown(e){
     if (e.keyCode == 32){
-        moveUp();
+        //moveUp();
+        newPlayer.moveUp();
     }
     if (e.keyCode == 13 && gameOver){
         reset();
     }
 }
-function moveUp(){
-    if(birdY >= 0)
-    birdVelocity = -4;
-    else
-    birdY=0;
-}
 
-//Checks if game is Over
-function isGameOver(){
-    for(var i = 0; i < pipes.length ;i++){
-        if((birdX + birdWidth >= pipes[i].x) && //If bird is touching pipes
-           (birdX <= pipes[i].x + pipeWidth) &&
-           ((birdY + birdHeight >= pipes[i].y + pipeLength + pipeGap) || (birdY <= pipes[i].y + pipeLength)) ||
-            (birdY+birdHeight >= cvs.height-floorHeight)
-        )
-        gameOver = true;
-    }
-    
-}
 
 function reset(){
     //Return Variables to default
@@ -153,8 +109,7 @@ function reset(){
         x: cvs.width,
         y:-300
     }
-    birdVelocity = 0;
-    birdY = 50;
+    newPlayer.resetPlayer();
     draw();
 }
 
@@ -163,8 +118,15 @@ function draw(){
     ctx.fillRect(0, 0, cvs.width, cvs.height);
     drawPipes();
     drawFloor();
-    drawBird();
-    isGameOver();
+    newPlayer.updatePlayer()
+    newPlayer.getInputs();
+    newPlayer.getOutput();
+    newPlayer.processOutput();
+    newPlayer.drawPlayer(ctx,imgBird);
+    
+    if(newPlayer.isPlayerDead()){
+        gameOver = true;
+    }
     requestAnimationFrame(draw);
     }
 }

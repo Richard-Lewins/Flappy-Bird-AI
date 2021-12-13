@@ -17,7 +17,7 @@ class player{
     }
 
     resetPlayer(){
-        alive = true;
+        this.alive = true;
         this.birdY = 50;
         this.birdVelocity = 0;
         this.fitness = 0;
@@ -46,20 +46,34 @@ class player{
             }
         }
 
-        this.inputs[0] = linearActivation(closestPipe.x - this.birdX,0,distanceBetweenPipes);
-        this.inputs[1] = linearActivation((closestPipe.y + pipeLength + pipeGap - this.birdY),-cvs.height,cvs.height);
-        this.inputs[2] = linearActivation(this.birdVelocity,-4,15);
-        this.inputs[3] = linearActivation(this.birdY,0,cvs.height);
+        this.inputs[0] = this.linearActivation(closestPipe.x - this.birdX,0,distanceBetweenPipes);
+        this.inputs[1] = this.linearActivation((closestPipe.y + pipeLength + pipeGap - this.birdY),-cvs.height,cvs.height);
+        this.inputs[2] = this.linearActivation(this.birdVelocity,-4,15);
+        this.inputs[3] = this.linearActivation(this.birdY,0,cvs.height);
 
     }
     
+    isPlayerDead(){
+        for(var i = 0; i < pipes.length ;i++){
+            if((this.birdX + this.birdWidth >= pipes[i].x) && //If bird is touching pipes
+                (this.birdX <= pipes[i].x + pipeWidth) &&
+                ((this.birdY + this.birdHeight >= pipes[i].y + pipeLength + pipeGap) || (this.birdY <= pipes[i].y + pipeLength)) ||
+                (this.birdY+this.birdHeight >= cvs.height-floorHeight)
+            ){
+            this.alive = false
+            return true;
+            }
+        }
+        return false;
+    }
     getOutput(){
-        this.outputs = this.genome.feedForward(this.inputs)
+        this.outputs = this.playerGenome.feedForward(this.inputs)
+        
     }
 
     processOutput(){
         if (this.outputs[0] > 0.5)
-            moveUp();
+            this.moveUp();
     }
     
     moveUp(){

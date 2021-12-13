@@ -309,16 +309,6 @@ class genome{
     }
 
 
-
-
-
-
-
-
-
-
-
-
     //Genome drawing
     draw_line(context, fromx, fromy, tox, toy,width,colour) {
 
