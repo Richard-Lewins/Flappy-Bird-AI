@@ -41,7 +41,7 @@ class player{
         this.inputs=[];
         let closestPipe = pipes[0];
         for(let i = 0;i < pipes.length;i++){
-            if (closestPipe.x < this.birdX || (pipes[i].x < closestPipe.x && pipes[i].x > this.birdX)){ 
+            if (closestPipe.x + pipeWidth < this.birdX || (pipes[i].x < closestPipe.x && pipes[i].x + pipeWidth> this.birdX)){ 
                 closestPipe = pipes[i];
             }
         }
