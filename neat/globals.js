@@ -1,2 +1,2 @@
 let connectionHistory = [];
-let currentInnovationNumber = 100;
+let currentInnovationNumber = 1;

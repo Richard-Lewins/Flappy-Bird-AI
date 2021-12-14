@@ -1,4 +1,4 @@
-
+//Create Flappy Canvas
 var cvs = document.createElement("canvas");
 cvs.id = "FlappyCanvas";
 cvs.width = 350;
@@ -48,7 +48,9 @@ var positionOfFloor = 0; //So that floor appears as if it's moving
 var floorHeight = 30;
 
 //Bird Variables
-let newPlayer = new player();
+//let newPlayer = new player();
+
+let birdPopulation = new population(1000);
 
 var gameOver = false;
 
@@ -109,7 +111,8 @@ function reset(){
         x: cvs.width,
         y:-300
     }
-    newPlayer.resetPlayer();
+    //newPlayer.resetPlayer();
+    birdPopulation.restart();
     draw();
 }
 
@@ -118,14 +121,17 @@ function draw(){
     ctx.fillRect(0, 0, cvs.width, cvs.height);
     drawPipes();
     drawFloor();
-    newPlayer.updatePlayer()
+    /*newPlayer.updatePlayer()
     newPlayer.getInputs();
-    newPlayer.getOutput();
-    newPlayer.processOutput();
+    newPlayer.getOutputs();
+    newPlayer.processOutputs();
     newPlayer.drawPlayer(ctx,imgBird);
-    
-    if(newPlayer.isPlayerDead()){
+    */
+   birdPopulation.run();
+
+    if(birdPopulation.gameOver){
         gameOver = true;
+        //reset()
     }
     requestAnimationFrame(draw);
     }

@@ -64,7 +64,6 @@ class genome{
     //Adds Connection between two nodes
     addConnectionMutation(){
         if (this.connectionGenes.length >= this.maxConnections()){ //If no more possible connections, cannot add new one
-            console.log("Max Connections Reached...")
             return;
         }
         
@@ -96,7 +95,6 @@ class genome{
             for(let ii = i+1;ii<this.layers;ii++){
             numConnections += this.orderedByLayers[i].length * this.orderedByLayers[ii].length;
         }}
-        console.log(numConnections);
         return numConnections;
     }
 
@@ -286,6 +284,91 @@ class genome{
         
     }
 
+    //Returns weight difference between thisgenome and genome2
+    getWeightDifference(genome2){
+        let genome1Total = 0;
+        for(let i = 0;i < this.connectionGenes.length;i++){
+            genome1Total += this.connectionGenes[i].weight;
+        }
+        let genome1Average = genome1Total/this.connectionGenes.length;
+
+        let genome2Total = 0;
+        for(let i = 0;i < genome2.connectionGenes.length;i++){
+            genome2Total += genome2.connectionGenes[i].weight;
+        }
+        let genome2Average = genome2Total/genome2.connectionGenes.length;
+
+        return Math.abs(genome1Average-genome2Average);
+    } 
+
+    getExcessGenes(genome2){
+        this.orderConnectionGenes();
+        genome2.orderConnectionGenes();
+        let excessGenes = 0;
+
+        //if this genome has the highest innovation number
+        if(this.connectionGenes[this.connectionGenes.length - 1].innovationNumber > genome2.connectionGenes[genome2.connectionGenes.length - 1].innovationNumber){
+            for(let i = this.connectionGenes.length - 1;i >= 0;i--){
+                //Increase excessGenes until innovationNumber of genome2 found that is lower or equal to genome2 max
+
+                if(this.connectionGenes[i].innovationNumber <= genome2.connectionGenes[genome2.connectionGenes.length - 1].innovationNumber){
+                    break;
+                }
+                excessGenes++;
+                
+            }
+
+        }
+        
+        if(this.connectionGenes[this.connectionGenes.length - 1].innovationNumber < genome2.connectionGenes[genome2.connectionGenes.length - 1].innovationNumber){
+            for(let i = genome2.connectionGenes.length - 1;i >= 0;i--){
+                //Increase excessGenes until innovationNumber of genome2 found that is lower or equal to genome2 max
+                
+                if(genome2.connectionGenes[i].innovationNumber <= this.connectionGenes[this.connectionGenes.length - 1].innovationNumber){
+                    break;
+                }
+                excessGenes++;
+                
+            }
+        }
+        return excessGenes;
+    }
+
+    getDisjointGenes(genome2){
+        this.orderConnectionGenes();
+        genome2.orderConnectionGenes();
+        
+        let genome1Position = 0;
+        let genome2Position = 0;
+        let disjointGenes = 0;
+        
+        //All innovation numbers after endInnovationNumber will be excessGenes
+        let endInnovationNumber = (this.connectionGenes[this.connectionGenes.length - 1].innovationNumber > genome2.connectionGenes[genome2.connectionGenes.length - 1].innovationNumber) ? genome2.connectionGenes[genome2.connectionGenes.length - 1].innovationNumber : this.connectionGenes[this.connectionGenes.length - 1].innovationNumber;
+
+        while(true){
+            if(this.connectionGenes[genome1Position].innovationNumber > genome2.connectionGenes[genome2Position].innovationNumber){
+                    disjointGenes++;
+                    genome2Position++;
+            }else if(this.connectionGenes[genome1Position].innovationNumber < genome2.connectionGenes[genome2Position].innovationNumber){
+                    disjointGenes++;
+                    genome1Position++;
+            }else{
+                    genome1Position++;
+                    genome2Position++;
+            }
+
+            if(this.connectionGenes[genome1Position].innovationNumber >= endInnovationNumber && genome2.connectionGenes[genome2Position].innovationNumber >= endInnovationNumber)
+                return disjointGenes;
+        }
+
+
+    }
+
+//OrderConnectionGene array in ascending innovation numbers
+    orderConnectionGenes(){
+        this.connectionGenes.sort((a,b) => (a.innovationNumber > b.innovationNumber) ? 1 : ((b.innovationNumber> a.innovationNumber) ? -1 : 0))
+    }
+
 //Assuming that this is the more fit Genome parent1 = this,parent2 = parentGenome2
     crossOver(parentGenome2){
         let babyGenome = this.clone();
@@ -298,7 +381,6 @@ class genome{
                 if(babyGenome.connectionGenes[i].innovationNumber == parentGenome2.connectionGenes[ii].innovationNumber){
                     let rand = Math.random();
                     if (rand >0.5){
-                        console.log("lol")
                         babyGenome.connectionGenes[i].weight = parentGenome2.connectionGenes[ii].weight;
                     }
                 }
@@ -307,6 +389,7 @@ class genome{
 
         return babyGenome;
     }
+
 
 
     //Genome drawing

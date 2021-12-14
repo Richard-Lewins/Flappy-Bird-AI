@@ -66,12 +66,12 @@ class player{
         }
         return false;
     }
-    getOutput(){
+    getOutputs(){
         this.outputs = this.playerGenome.feedForward(this.inputs)
         
     }
 
-    processOutput(){
+    processOutputs(){
         if (this.outputs[0] > 0.5)
             this.moveUp();
     }
