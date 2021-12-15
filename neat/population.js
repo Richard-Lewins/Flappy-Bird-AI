@@ -2,6 +2,7 @@ class population{
     constructor(numOfPlayers){
         this.players = [];
         this.arrSpecies = [];
+        this.originalNumOfPlayers = numOfPlayers
         this.deadCount = 0;
         this.gameOver = false;
         this.generationNumber = 1;
@@ -39,26 +40,33 @@ class population{
     restart(){
         this.generationNumber++;
         this.speciate();
-        let oldPlayerLength = this.players.length;
         let oldTotalFitness = this.getTotalFitness();
         let bestPlayer = this.getBestPlayer();
-        bestPlayer.resetPlayer();
+        console.log(bestPlayer.playerGenome)
 
         this.players = [];
 
-        this.players.push(bestPlayer);
+        this.players.push(new player());
+        this.players[0].playerGenome = bestPlayer.playerGenome.clone();
+        console.log(this.players[0].playerGenome)
 
-        for(let i = 0;i < this.arrSpecies.length;i++){
+        /*for(let i = 0;i < this.arrSpecies.length;i++){
             //My adaptation of explicit fitness sharing, higher average fitness means more babies
-            let numberOfBabies = Math.ceil((this.arrSpecies[i].getTotalSpeciesFitness()/oldTotalFitness)*oldPlayerLength)
-            console.log(this.arrSpecies[i].getTotalSpeciesFitness(),oldTotalFitness)
+            let numberOfBabies = Math.floor((this.arrSpecies[i].getTotalSpeciesFitness()/oldTotalFitness)*this.originalNumOfPlayers)
             for(let ii = 0;ii < numberOfBabies;ii++){
                 this.players.push(this.arrSpecies[i].getBaby())
             }
         }
-
+*/
+        for(let i= this.players.length - 1;i<this.originalNumOfPlayers;i++){
+            this.players.push(new player())
+            this.players[i].playerGenome = bestPlayer.playerGenome.clone()
+        }
+        
+        console.log(this.players[0].playerGenome)
         this.gameOver = false;
         this.deadCount = 0;
+        
         
     }
 

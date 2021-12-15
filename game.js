@@ -50,7 +50,7 @@ var floorHeight = 30;
 //Bird Variables
 //let newPlayer = new player();
 
-let birdPopulation = new population(1000);
+let birdPopulation = new population(10);
 
 var gameOver = false;
 
@@ -113,6 +113,7 @@ function reset(){
     }
     //newPlayer.resetPlayer();
     birdPopulation.restart();
+    gameOver = false;
     draw();
 }
 

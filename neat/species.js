@@ -20,7 +20,6 @@ class species{
         let weightDifference = this.speciatedPlayers[0].playerGenome.getWeightDifference(player.playerGenome)
         
         let compatibility = this.excessCoeff*(excessGenes/N) + this.disjointCoeff*(disjointGenes/N) + weightDifference;
-        console.log(compatibility);
         if (compatibility < this.compatibilityThreshold )
             return true;
         else
@@ -50,7 +49,7 @@ class species{
         let total = 0;
 
         for(let i = 0;i < this.speciatedPlayers.length;i++){
-            total += this.speciatedPlayers[0].fitness;
+            total += this.speciatedPlayers[i].fitness;
         }
 
         return total;
