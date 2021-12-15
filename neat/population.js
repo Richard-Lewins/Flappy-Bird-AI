@@ -67,7 +67,8 @@ class population{
 
         for(let i= this.players.length - 1;i<this.originalNumOfPlayers;i++){
             this.players.push(new player())
-            this.players[i].playerGenome = bestPlayer.playerGenome.clone()
+            //if(Math.random() > 0.5)
+                this.players[i].playerGenome = bestPlayer.playerGenome.clone()
             this.players[i].playerGenome.mutate()
         }
         

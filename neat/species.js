@@ -2,9 +2,9 @@ class species{
     constructor(){
         this.speciatedPlayers = [];
         //coefficients for testing compatibility
-        this.excessCoeff = 3;
-        this.disjointCoeff = 3;
-        this.weightDiffCoeff = 1;
+        this.excessCoeff = 1;
+        this.disjointCoeff = 1;
+        this.weightDiffCoeff = 2;
         this.compatibilityThreshold = 1;
     }
 

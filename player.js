@@ -37,7 +37,7 @@ class player{
         this.fitness++;
     }
 
-    getInputs(){ //Inputs: [Distance From bird to closest pipe(X), Distance From bird to Bottom of pipe(y), birdVelelocity,birdY]
+    getInputs(){ //Inputs: [Distance From bird to closest pipe(X), Distance From bird to Bottom of pipe(y), birdVelelocity,Distance from bird to top of pipe]
         this.inputs=[];
         let closestPipe = pipes[0];
         for(let i = 0;i < pipes.length;i++){
@@ -49,7 +49,7 @@ class player{
         this.inputs[0] = this.linearActivation(closestPipe.x - this.birdX,0,distanceBetweenPipes);
         this.inputs[1] = this.linearActivation((closestPipe.y + pipeLength + pipeGap - this.birdY),-cvs.height,cvs.height);
         this.inputs[2] = this.linearActivation(this.birdVelocity,-4,15);
-        this.inputs[3] = this.linearActivation(this.birdY,0,cvs.height);
+        this.inputs[3] = this.linearActivation((closestPipe.y + pipeLength + pipeGap - this.birdY),-cvs.height,cvs.height);
 
     }
     
