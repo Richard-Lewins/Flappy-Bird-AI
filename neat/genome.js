@@ -280,6 +280,9 @@ class genome{
         }
         newGenome.layers = this.layers;
         newGenome.currentNodeId = this.currentNodeId;
+        //Bias node should always be one
+        newGenome.nodeGenes[this.biasNode].weight = 1;
+        newGenome.updateNodeConnections();
         return newGenome;
         
     }

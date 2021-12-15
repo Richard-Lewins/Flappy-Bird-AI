@@ -32,7 +32,7 @@ class player{
 
         if(this.birdVelocity >= 15)
             this.birdVelocity = 15;//Sets maximum velocity to 15
-
+            
         this.birdY += this.birdVelocity;
         this.fitness++;
     }
@@ -77,10 +77,12 @@ class player{
     }
     
     moveUp(){
-        if(this.birdY >= 0)
+        if(this.birdY > 0){
             this.birdVelocity = -4;
-        else
+        }else{
+            this.fitness -= 0.5; //naughty bird
             this.birdY=0;
+        }
     }
 
     //"Squishes" into given ranges

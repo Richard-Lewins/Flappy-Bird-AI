@@ -40,7 +40,7 @@ pipes[0] = {
 var pipeWidth = 60;
 var pipeLength = cvs.height;
 var pipeGap = 75; //Gap between top pipe and bottom pipe
-var distanceBetweenPipes = 188; //Gaps between pipes coming from the right
+var distanceBetweenPipes = 200; //Gaps between pipes coming from the right
 var pipeSpeed = 1;
 
 //Floor Variables
@@ -50,7 +50,7 @@ var floorHeight = 30;
 //Bird Variables
 //let newPlayer = new player();
 
-let birdPopulation = new population(10);
+let birdPopulation = new population(1000);
 
 var gameOver = false;
 
@@ -114,7 +114,6 @@ function reset(){
     //newPlayer.resetPlayer();
     birdPopulation.restart();
     gameOver = false;
-    draw();
 }
 
 function draw(){
@@ -129,12 +128,12 @@ function draw(){
     newPlayer.drawPlayer(ctx,imgBird);
     */
    birdPopulation.run();
+   requestAnimationFrame(draw);
 
     if(birdPopulation.gameOver){
         gameOver = true;
-        //reset()
+        reset()
     }
-    requestAnimationFrame(draw);
     }
 }
 

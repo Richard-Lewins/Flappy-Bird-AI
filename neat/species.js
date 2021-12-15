@@ -2,10 +2,10 @@ class species{
     constructor(){
         this.speciatedPlayers = [];
         //coefficients for testing compatibility
-        this.excessCoeff = 1;
-        this.disjointCoeff = 1;
-        this.weightDiffCoeff = 0.5;
-        this.compatibilityThreshold = 3;
+        this.excessCoeff = 3;
+        this.disjointCoeff = 3;
+        this.weightDiffCoeff = 1;
+        this.compatibilityThreshold = 1;
     }
 
     addPlayer(player){
@@ -20,6 +20,7 @@ class species{
         let weightDifference = this.speciatedPlayers[0].playerGenome.getWeightDifference(player.playerGenome)
         
         let compatibility = this.excessCoeff*(excessGenes/N) + this.disjointCoeff*(disjointGenes/N) + weightDifference;
+        console.log(compatibility);
         if (compatibility < this.compatibilityThreshold )
             return true;
         else
@@ -32,6 +33,14 @@ class species{
         
         let median = this.speciatedPlayers.length/2;
         this.speciatedPlayers = this.speciatedPlayers.splice(0,median);
+    }
+
+    killBelowAverage(){
+        let averageFitness = this.getTotalSpeciesFitness()/this.speciatedPlayers.length;
+
+        let aboveAveragePlayers = this.speciatedPlayers.filter(Player => {Player.fitness > averageFitness});
+
+        this.speciatedPlayers = aboveAveragePlayers;
     }
 
     getBaby(){
