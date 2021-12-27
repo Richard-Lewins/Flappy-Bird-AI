@@ -47,10 +47,16 @@ class player{
         }
 
         this.inputs[0] = this.linearActivation(closestPipe.x - this.birdX,0,distanceBetweenPipes);
-        this.inputs[1] = this.linearActivation((closestPipe.y + pipeLength + pipeGap - this.birdY),-cvs.height,cvs.height);
+        this.inputs[1] = this.linearActivation((closestPipe.y + pipeLength + pipeGap - this.birdY),-flappyCanvas.height,flappyCanvas.height);
         this.inputs[2] = this.linearActivation(this.birdVelocity,-4,15);
-        this.inputs[3] = this.linearActivation((closestPipe.y + pipeLength + pipeGap - this.birdY),-cvs.height,cvs.height);
+        this.inputs[3] = this.linearActivation((closestPipe.y + pipeLength + pipeGap - this.birdY),-flappyCanvas.height,flappyCanvas.height);
 
+    }
+
+    getScore(){
+        let score = Math.floor((this.fitness - (flappyCanvas.width + pipeWidth - this.birdX))/distanceBetweenPipes) + 1;
+        if (score < 0) {score = 0};
+        return score
     }
     
     isPlayerDead(){
@@ -58,7 +64,7 @@ class player{
             if((this.birdX + this.birdWidth >= pipes[i].x) && //If bird is touching pipes
                 (this.birdX <= pipes[i].x + pipeWidth) &&
                 ((this.birdY + this.birdHeight >= pipes[i].y + pipeLength + pipeGap) || (this.birdY <= pipes[i].y + pipeLength)) ||
-                (this.birdY+this.birdHeight >= cvs.height-floorHeight)
+                (this.birdY+this.birdHeight >= flappyCanvas.height-floorHeight)
             ){
             this.alive = false
             return true;
