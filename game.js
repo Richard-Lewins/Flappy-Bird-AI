@@ -32,7 +32,7 @@ body.appendChild(genomeCanvas);
 var speedSpinner = document.getElementById("speedSpinner");
 var generationLabel = document.getElementById("generationLabel");
 var scoreLabel = document.getElementById("scoreLabel");
-
+var aliveLabel = document.getElementById("aliveLabel");
 //Loading Images
 var imgFloor = new Image();
 imgFloor.src = "images/floor.png";
@@ -63,8 +63,6 @@ var pipeLength = flappyCanvas.height;
 var pipeGap = 100; //Gap between top pipe and bottom pipe
 var distanceBetweenPipes = 200; //Gaps between pipes coming from the right
 var pipeSpeed = 1;
-
-let gameSpeed = 1;
 
 //Floor Variables
 var positionOfFloor = 0; //So that floor appears as if it's moving
@@ -159,9 +157,9 @@ function draw(){
                 bestPlayer.playerGenome.draw();
             }
 
-
-            //Draw current Best Genome
-            scoreLabel.innerText = `Score: ${bestPlayer.getScore()}`
+            //Set Labels
+            scoreLabel.innerText = `Score: ${bestPlayer.getScore()}`;
+            aliveLabel.innerText = `Alive: ${birdPopulation.players.length - birdPopulation.deadCount}`;
             if(birdPopulation.gameOver){
                 gameOver = true;
                 reset();

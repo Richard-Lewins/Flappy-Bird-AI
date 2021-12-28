@@ -24,7 +24,7 @@ class population{
                 this.players[i].processOutputs();
                 this.players[i].updatePlayer();
                 this.players[i].drawPlayer(ctx,imgBird);
-
+                
                 if(this.players[i].isPlayerDead()){
                     this.deadCount++;
                 }

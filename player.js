@@ -1,5 +1,4 @@
 //Class that will be different for each game
-
 class player{
     constructor(){
         this.alive = true;
