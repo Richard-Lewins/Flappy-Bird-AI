@@ -48,7 +48,7 @@ class player{
         this.inputs[0] = this.linearActivation(closestPipe.x - this.birdX,0,distanceBetweenPipes);
         this.inputs[1] = this.linearActivation((closestPipe.y + pipeLength + pipeGap - this.birdY),-flappyCanvas.height,flappyCanvas.height);
         this.inputs[2] = this.linearActivation(this.birdVelocity,-4,15);
-        this.inputs[3] = this.linearActivation((closestPipe.y + pipeLength + pipeGap - this.birdY),-flappyCanvas.height,flappyCanvas.height);
+        this.inputs[3] = this.linearActivation((closestPipe.y + pipeLength - this.birdY),-flappyCanvas.height,flappyCanvas.height);
 
     }
 
