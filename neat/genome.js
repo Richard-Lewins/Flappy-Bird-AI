@@ -138,19 +138,19 @@ class genome{
         //Add node to nodeGenes Array
         let connectionFromLayer = randomConnectionGene.fromNode.layer;
         let connectionToLayer = randomConnectionGene.toNode.layer;
-        let layer = connectionFromLayer + 1; //ConnectionFrom = 0,Layer=1,ConnectionTo=1
+        let layer = connectionFromLayer + 1; // ConnectionFrom = 0,Layer=1,ConnectionTo=1
 
-        //If no layers in between created, create new layer
+        // If no layers in between created, create new layer
         if (layer == connectionToLayer){
             for(let i = 0; i<this.nodeGenes.length;i++){
                 if(this.nodeGenes[i].layer >= layer){
-                    this.nodeGenes[i].layer++; //increase layer of all other connections after current layer 
+                    this.nodeGenes[i].layer++; // increase layer of all other connections after current layer 
                 }
             }
             this.layers++;
         }
         
-        //Add nodeGene to gene Array
+        // Add nodeGene to gene Array
         let newNode = new nodeGene(layer,this.currentNodeId)
         newNode.oldConnection = randomConnectionGene;
         this.nodeGenes.push(newNode);
@@ -187,7 +187,7 @@ class genome{
         return uniqueInno;
     }
 
-    //Ranomly mutates genome
+    // Randomly mutates genome
     mutate(){
         let randomNum = Math.random();
 
@@ -256,7 +256,7 @@ class genome{
     }
 
     // Deep copies the genome and returns the new genome (copies all of the node and connection genes)
-    clone(){
+    deepClone(){
         let newGenome = new genome(this.inputs,this.outputs);
         newGenome.nodeGenes = [];
         newGenome.connectionGenes = [];
@@ -298,7 +298,7 @@ class genome{
         
     }
 
-    //Returns total weight difference between thisgenome and genome2
+    // Returns total weight difference between thisgenome and genome2
     getWeightDifference(genome2){
         let genome1Total = 0;
         for(let i = 0;i < this.connectionGenes.length;i++){
@@ -401,7 +401,7 @@ class genome{
 
     // Assuming that this is the more fit Genome parent1 = this,parent2 = parentGenome2
     crossOver(parentGenome2){
-        let babyGenome = this.clone();
+        let babyGenome = this.deepClone();
 
         //Keep the topology of the most fit parent(this), but 50% use weights of parent1, 50% parent2, if connection shares innovationNumber
         for(let i = 0;i < babyGenome.connectionGenes.length;i++){

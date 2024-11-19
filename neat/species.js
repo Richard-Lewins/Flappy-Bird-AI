@@ -23,7 +23,6 @@ class species{
      * - Disjoint genes - Number of genes that exist on both genomes but do not match up
      * - Average weight differences
      */
-    
     belongsInSpecies(player){
     
         // Get the length of the largest genome

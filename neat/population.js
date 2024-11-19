@@ -59,7 +59,7 @@ class population{
 
         // Add the best player from the previous generation to the new generation unchanged
         this.players.push(new player());
-        this.players[0].playerGenome = bestPlayer.playerGenome.clone();
+        this.players[0].playerGenome = bestPlayer.playerGenome.deepClone();
         
         // Create new players based on species fitness to maintain diversity
         // The diversity is needed to prevent the population from converging to a local maximum
@@ -77,7 +77,7 @@ class population{
             // if(Math.random() > 0.5)
 
             // Take the best player and mutate it
-            this.players[i].playerGenome = bestPlayer.playerGenome.clone()
+            this.players[i].playerGenome = bestPlayer.playerGenome.deepClone()
             this.players[i].playerGenome.mutate()
         }
         
