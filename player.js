@@ -36,7 +36,7 @@ class player{
         this.fitness++;
     }
 
-    getInputs(){ //Inputs: [Distance From bird to closest pipe(X), Distance From bird to Bottom of pipe(y), birdVelelocity,Distance from bird to top of pipe]
+    updateInputs(){ //Inputs: [Distance From bird to closest pipe(X), Distance From bird to Bottom of pipe(y), birdVelelocity,Distance from bird to top of pipe]
         this.inputs=[];
         let closestPipe = pipes[0];
         for(let i = 0;i < pipes.length;i++){
@@ -58,7 +58,7 @@ class player{
         return score
     }
     
-    isPlayerDead(){
+    checkIfPlayerDead(){
         for(var i = 0; i < pipes.length ;i++){
             if((this.birdX + this.birdWidth >= pipes[i].x) && //If bird is touching pipes
                 (this.birdX <= pipes[i].x + pipeWidth) &&
@@ -71,7 +71,7 @@ class player{
         }
         return false;
     }
-    getOutputs(){
+    getOutputs() {
         this.outputs = this.playerGenome.feedForward(this.inputs)
         
     }

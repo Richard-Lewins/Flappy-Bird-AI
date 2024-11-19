@@ -1,3 +1,8 @@
+/* Represents a single connection between two nodes in a neural network.
+   Each connection includes its weight, whether it's enabled, and an innovation number 
+   to uniquely identify it for evolutionary purposes in a NEAT algorithm.
+*/
+
 class connectionGene{
     constructor(fromNode,toNode,weight,innovationNumber){
         this.fromNode = fromNode;
@@ -29,7 +34,7 @@ class connectionGene{
         var changeType = Math.random();
 
         if (changeType < 0.1) { //Completely Change at Random Weight
-            this.weight = this.randomRange(-1,1);
+            this.weight = randomRange(-1,1);
         }else{
             this.weight += this.centeredRandom()/40
         }

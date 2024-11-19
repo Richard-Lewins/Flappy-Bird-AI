@@ -8,12 +8,26 @@ class species{
         this.compatibilityThreshold = 1;
     }
 
+    // Add a player to this species
     addPlayer(player){
         this.speciatedPlayers.push(player);
     }
 
+    // NEAT Algorithm speciation from Kenneth O. Stanley and Risto Miikkulainen
+
+    /**
+     * Determines if a given player belongs to this species based on compatibility metrics.
+     * Uses the NEAT algorithm for calculating compatibility between genomes.
+     * Compatibility is calculated as a weighted combination of:
+     * - Excess genes - Number of genes that exist on one genome but do not exist on the other
+     * - Disjoint genes - Number of genes that exist on both genomes but do not match up
+     * - Average weight differences
+     */
+    
     belongsInSpecies(player){
-        let N = (this.speciatedPlayers[0].playerGenome.connectionGenes.length > player.playerGenome.connectionGenes.length) ? this.speciatedPlayers[0].playerGenome.connectionGenes.length : player.playerGenome.connectionGenes.length; 
+    
+        // Get the length of the largest genome
+        let N = Math.max(this.speciatedPlayers[0].playerGenome.connectionGenes.length, player.playerGenome.connectionGenes.length);
 
         let excessGenes = this.speciatedPlayers[0].playerGenome.getExcessGenes(player.playerGenome);
         let disjointGenes = this.speciatedPlayers[0].playerGenome.getDisjointGenes(player.playerGenome);
@@ -26,7 +40,7 @@ class species{
             return false;
     }
 
-    //Kill worse half of the species
+    // Kill worse half of the species
     killHalf(){
         this.orderSpeciesByFitness();
         
@@ -34,6 +48,7 @@ class species{
         this.speciatedPlayers = this.speciatedPlayers.splice(0,median);
     }
 
+    // Kill below average players (Not used in this implementation)
     killBelowAverage(){
         let averageFitness = this.getTotalSpeciesFitness()/this.speciatedPlayers.length;
 
@@ -42,9 +57,10 @@ class species{
         this.speciatedPlayers = aboveAveragePlayers;
     }
 
+    // Get a baby from two random parents in the species
     getBaby(){
-        let parent1 = this.speciatedPlayers[Math.floor(this.randomRange(0,this.speciatedPlayers.length))];
-        let parent2 = this.speciatedPlayers[Math.floor(this.randomRange(0,this.speciatedPlayers.length))];
+        let parent1 = this.speciatedPlayers[Math.floor(randomRange(0,this.speciatedPlayers.length))];
+        let parent2 = this.speciatedPlayers[Math.floor(randomRange(0,this.speciatedPlayers.length))];
         let babyGenome = parent1.playerGenome.crossOver(parent2.playerGenome);
         let baby = new player();
         baby.playerGenome = babyGenome;
@@ -53,6 +69,7 @@ class species{
 
     }
 
+    // Get the total fitness of the species
     getTotalSpeciesFitness(){
         let total = 0;
 
@@ -66,9 +83,5 @@ class species{
     //Highest Fitness first
     orderSpeciesByFitness(){
         this.speciatedPlayers.sort((a,b) => (a.fitness < b.fitness) ? 1 : ((b.fitness < a.fitness) ? -1 : 0))
-    }
-
-    randomRange(min,max){
-        return Math.random()*(max-min) + min;
     }
 }

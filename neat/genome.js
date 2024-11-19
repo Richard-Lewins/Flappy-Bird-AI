@@ -32,31 +32,29 @@ class genome{
         this.connectInputsAndOutputs();
     }
 
+    // For all of the nodes in the genome, basically let them get
+    // a reference to all the connections that are connected to them
     updateNodeConnections(){
         for (var i = 0; i < this.nodeGenes.length; i++) { //clear the connections
             this.nodeGenes[i].connections = [];
-
           }
       
-          for (var i = 0; i < this.connectionGenes.length; i++) { //for each connectionGene
-            this.connectionGenes[i].fromNode.connections.push(this.connectionGenes[i]); //add it to node
+          //for each connectionGene
+          for (var i = 0; i < this.connectionGenes.length; i++) { 
+            // store the refereence the connectionGene in the node its coming from
+            this.connectionGenes[i].fromNode.connections.push(this.connectionGenes[i]);
           }
-    }
-
-    //Get a random number between min(inclusive) and max(exclusive)
-    randomRange(min,max){
-        return Math.random()*(max-min) + min;
     }
 
     //Connects inputs/bias and ouput nodes
     connectInputsAndOutputs(){
+        // This.inputs + 1 to include the bias node
         for(let input = 0; input <= this.inputs;input++){
             for(let output = 0; output<this.outputs;output++){
                 //Connect input and outputs with connectionGenes
-                this.connectionGenes.push(new connectionGene(this.nodeGenes[input],this.nodeGenes[this.inputs + output + 1],this.randomRange(-1,1),this.getInnovationNumber(this.nodeGenes[input],this.nodeGenes[this.inputs + output])));
+                this.connectionGenes.push(new connectionGene(this.nodeGenes[input],this.nodeGenes[this.inputs + output + 1],randomRange(-1,1),this.getInnovationNumber(this.nodeGenes[input],this.nodeGenes[this.inputs + output])));
             }
         }
-        //connects bias node
 
         this.updateNodeConnections();
     }
@@ -69,12 +67,13 @@ class genome{
         
         let randomNode1 = Math.floor(Math.random()*(this.nodeGenes.length)); //Get two random nodes
         let randomNode2 = Math.floor(Math.random()*(this.nodeGenes.length));
-        while(this.nodesCannotBeConnected(randomNode1,randomNode2)){ //If nodes can't be connected, get new node
+        while(!this.nodesCanBeConnected(randomNode1,randomNode2)){ //If nodes can't be connected, get new node
             randomNode1 = Math.floor(Math.random()*(this.nodeGenes.length));
             randomNode2 = Math.floor(Math.random()*(this.nodeGenes.length));
         }
         //If Layer of randomNode1 > randomNode2 Create connectionGene with switch to and from nodes
         
+        /* Add a connectionGene, but ensure that fromNode is in a lower layer than toNode */
         if (this.nodeGenes[randomNode1].layer > this.nodeGenes[randomNode2].layer) {
             var innovationNumber = this.getInnovationNumber(this.nodeGenes[randomNode2],this.nodeGenes[randomNode1]);
             this.connectionGenes.push(new connectionGene(this.nodeGenes[randomNode2],this.nodeGenes[randomNode1],Math.random()*2 - 1,innovationNumber));//Pushes with weight between -1 and 1
@@ -86,38 +85,41 @@ class genome{
         this.updateNodeConnections();
     }
 
-    //Returns the max connections this genome can have, given amount of nodes (Enabled and disabled)
+    // Returns the max connections this genome can have, given amount of nodes (Enabled and disabled)
+    // This is if every node is connected to every other node in later layers
     maxConnections(){
         this.orderLayers();
         let numConnections = 0;
 
-        for(let i = 0;i<this.layers - 1;i++){
-            for(let ii = i+1;ii<this.layers;ii++){
-            numConnections += this.orderedByLayers[i].length * this.orderedByLayers[ii].length;
+        for(let fromLayer = 0; fromLayer<this.layers - 1; fromLayer++){
+            for(let toLayer = fromLayer+1; toLayer<this.layers; toLayer++){
+            numConnections += this.orderedByLayers[fromLayer].length * this.orderedByLayers[toLayer].length;
         }}
         return numConnections;
     }
 
-    //Tests too see if two Nodes Can be connected
-    nodesCannotBeConnected(node1,node2){
+    // Tests too see if two Nodes Can be connected
+    nodesCanBeConnected(node1,node2){
 
-        // if the this.nodes are in the same layer or n1 is layer after n2
-        if (this.nodeGenes[node1].layer == this.nodeGenes[node2].layer) return true; 
+        // If the this.nodes are in the same layer, they cannot be connected
+        if (this.nodeGenes[node1].layer == this.nodeGenes[node2].layer) return false; 
 
-        //If connection is already made between these two nodes
-
+        // If connection is already made between these two nodes
         for(let i = 0; i < this.connectionGenes.length;i++){
             if (this.connectionGenes[i].toNode.nodeId == this.nodeGenes[node1].nodeId && this.connectionGenes[i].fromNode.nodeId == this.nodeGenes[node2].nodeId){
-                return true;
+                return false;
             }
             if (this.connectionGenes[i].toNode.nodeId == this.nodeGenes[node2].nodeId && this.connectionGenes[i].fromNode.nodeId == this.nodeGenes[node1].nodeId){
-                return true;
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 
+    // Adds a new node to the genome
+    // It does this by by taking a random connection and splitting it into two connections
+    // The new node is placed in a new layer between the two nodes
     addNodeMutation(){
         if(this.connectionGenes.length == 0){
             //If no connections already, add one
@@ -196,41 +198,49 @@ class genome{
             });
         }
 
-        //Add random connection
+        // Sometimes add a new connection
         if (randomNum < 0.1){
             this.addConnectionMutation();
         }
 
+        // Sometimes add a new node (in a new layer)
         if (randomNum < 0.02){
             this.addNodeMutation();
         }
 
     }
 
+    /* Takes the inputs in arrInputs, feeds it through the neural network
+       and returns the output of the network in an array. */
     feedForward(arrInputs){
-        for(let i = 0;i<this.inputs;i++){ //set values of input nodes
+        // set values of input nodes
+        for(let i = 0;i<this.inputs;i++){ 
             this.nodeGenes[i].inputValue = arrInputs[i];
         }
+        // split nodes into layers
         this.orderLayers();
+
+        // send output through connections
         for(let i = 0;i < this.orderedByLayers.length - 1;i++){
             for(let ii = 0;ii < this.orderedByLayers[i].length;ii++){
                 this.orderedByLayers[i][ii].sendOutput();
             }
         }
         let outputArray = []
-        //Assign Outputs as variable to be returned
+
+        // Assign Outputs as variable to be returned
         for(let i = 0;i < this.orderedByLayers[this.orderedByLayers.length -1].length;i++){
             outputArray.push(this.sigmoid(this.orderedByLayers[this.orderedByLayers.length - 1][i].inputValue));
         }
 
         return outputArray;
-
     }
 
-    //Activation Function
+    // "Squishes" values into given ranges
     sigmoid(x){
         return 1.0 / (1.0 + Math.pow(Math.E, -4.9 * x));
     }
+
     //Order Nodes into its layers
     orderLayers(){
         this.orderedByLayers = [];
@@ -245,13 +255,14 @@ class genome{
         }
     }
 
+    // Deep copies the genome and returns the new genome (copies all of the node and connection genes)
     clone(){
         let newGenome = new genome(this.inputs,this.outputs);
         newGenome.nodeGenes = [];
         newGenome.connectionGenes = [];
         //Add nodeGenes array to new genome
         for(let i = 0;i < this.nodeGenes.length;i++){
-            newGenome.nodeGenes.push(this.nodeGenes[i].clone());
+            newGenome.nodeGenes.push(this.nodeGenes[i].shallowClone());
         }
 
         for(let i = 0;i < newGenome.nodeGenes.length;i++){
@@ -287,7 +298,7 @@ class genome{
         
     }
 
-    //Returns weight difference between thisgenome and genome2
+    //Returns total weight difference between thisgenome and genome2
     getWeightDifference(genome2){
         let genome1Total = 0;
         for(let i = 0;i < this.connectionGenes.length;i++){
@@ -304,12 +315,21 @@ class genome{
         return Math.abs(genome1Average-genome2Average);
     } 
 
+    /* Returns the number of excess genes between this genome and another genome.
+      Excess genes are genes that are in genome1 but not in genome2, or vice versa.
+    */
     getExcessGenes(genome2){
+
+        // Order the connection genes of both genomes by their innovation number (ascending).
+        // This ensures that the genes are in the same order, based on the historical sequence of mutations.
         this.orderConnectionGenes();
         genome2.orderConnectionGenes();
         let excessGenes = 0;
 
-        //if this genome has the highest innovation number
+        // Basically iterating down the innovation number of the higher genome, and counting the excess genes
+        // until the innovation number of the lower genome is reached.
+
+        // if this genome has the highest innovation number
         if(this.connectionGenes[this.connectionGenes.length - 1].innovationNumber > genome2.connectionGenes[genome2.connectionGenes.length - 1].innovationNumber){
             for(let i = this.connectionGenes.length - 1;i >= 0;i--){
                 //Increase excessGenes until innovationNumber of genome2 found that is lower or equal to genome2 max
@@ -323,6 +343,7 @@ class genome{
 
         }
         
+        // if genome2 has the highest innovation number
         if(this.connectionGenes[this.connectionGenes.length - 1].innovationNumber < genome2.connectionGenes[genome2.connectionGenes.length - 1].innovationNumber){
             for(let i = genome2.connectionGenes.length - 1;i >= 0;i--){
                 //Increase excessGenes until innovationNumber of genome2 found that is lower or equal to genome2 max
@@ -337,7 +358,11 @@ class genome{
         return excessGenes;
     }
 
+    /* Returns the number of disjoint genes - 
+       Number of genes that exist on both genomes but do not match up
+    */
     getDisjointGenes(genome2){
+        // Order the connection genes of both genomes by their innovation number (ascending).
         this.orderConnectionGenes();
         genome2.orderConnectionGenes();
         
@@ -345,8 +370,10 @@ class genome{
         let genome2Position = 0;
         let disjointGenes = 0;
         
-        //All innovation numbers after endInnovationNumber will be excessGenes
-        let endInnovationNumber = (this.connectionGenes[this.connectionGenes.length - 1].innovationNumber > genome2.connectionGenes[genome2.connectionGenes.length - 1].innovationNumber) ? genome2.connectionGenes[genome2.connectionGenes.length - 1].innovationNumber : this.connectionGenes[this.connectionGenes.length - 1].innovationNumber;
+        // Get the minimum innovation number of the last gene of both genomes
+        // Almost like the last innovation that both genomes share
+        let endInnovationNumber = Math.min(this.connectionGenes[this.connectionGenes.length - 1].innovationNumber,
+                                           genome2.connectionGenes[genome2.connectionGenes.length - 1].innovationNumber)
 
         while(true){
             if(this.connectionGenes[genome1Position].innovationNumber > genome2.connectionGenes[genome2Position].innovationNumber){
@@ -367,12 +394,12 @@ class genome{
 
     }
 
-//OrderConnectionGene array in ascending innovation numbers
+    // OrderConnectionGene array in ascending comparing by innovation numbers
     orderConnectionGenes(){
         this.connectionGenes.sort((a,b) => (a.innovationNumber > b.innovationNumber) ? 1 : ((b.innovationNumber> a.innovationNumber) ? -1 : 0))
     }
 
-//Assuming that this is the more fit Genome parent1 = this,parent2 = parentGenome2
+    // Assuming that this is the more fit Genome parent1 = this,parent2 = parentGenome2
     crossOver(parentGenome2){
         let babyGenome = this.clone();
 
@@ -395,7 +422,9 @@ class genome{
 
 
 
-    //Genome drawing
+    /* The following code is used for drawing the genome to the screen */
+
+    //Draws a line between two points
     draw_line(context, fromx, fromy, tox, toy,width,colour) {
 
         context.strokeStyle = colour;
@@ -407,7 +436,7 @@ class genome{
     
       }
 
-     
+    //Set up the canvas and node positions/size
     setup(canvas,radius){
         this.canvas = canvas;
         this.radius = radius;
@@ -426,6 +455,7 @@ class genome{
         }
     }     
 
+    //Draws the genome to the screen
     draw(){
         let ctx = this.canvas.getContext("2d");
         //Update X and Y coordinates of nodeGenes

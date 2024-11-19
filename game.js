@@ -33,6 +33,7 @@ var speedSpinner = document.getElementById("speedSpinner");
 var generationLabel = document.getElementById("generationLabel");
 var scoreLabel = document.getElementById("scoreLabel");
 var aliveLabel = document.getElementById("aliveLabel");
+
 //Loading Images
 var imgFloor = new Image();
 imgFloor.src = "images/floor.png";
@@ -160,12 +161,16 @@ function draw(){
             //Set Labels
             scoreLabel.innerText = `Score: ${bestPlayer.getScore()}`;
             aliveLabel.innerText = `Alive: ${birdPopulation.players.length - birdPopulation.deadCount}`;
+
+            // If everyone in the current generation died, restart with new generation
             if(birdPopulation.gameOver){
                 gameOver = true;
                 reset();
                 break;
             }
         }
+
+    // Iteratively call draw() using requestAnimationFrame
     requestAnimationFrame(draw);
     }
 }
