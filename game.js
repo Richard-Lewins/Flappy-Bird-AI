@@ -72,7 +72,7 @@ var floorHeight = 30;
 //Bird Variables
 //let newPlayer = new player();
 
-let birdPopulation = new population(1000);
+let birdPopulation = new population(1000); // Create NEAT population
 
 var gameOver = false;
 
@@ -133,7 +133,7 @@ function reset(){
         x: flappyCanvas.width,
         y:-300
     }
-    birdPopulation.restart();
+    birdPopulation.restart(); // Restart NEAT population
     bestPlayer = birdPopulation.players[0];
     generationLabel.innerText = `Generation: ${birdPopulation.generationNumber}`;
 
@@ -150,7 +150,7 @@ function draw(){
             drawPipes();
             drawFloor();
 
-            birdPopulation.run();
+            birdPopulation.run(); // Run NEAT algorithm
             let newBest = birdPopulation.getBestPlayer()
             if(newBest.fitness > bestPlayer.fitness){
                 bestPlayer = newBest;
