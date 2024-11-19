@@ -255,28 +255,46 @@ class genome{
         }
     }
 
-    // Deep copies the genome and returns the new genome (copies all of the node and connection genes)
+    /*
+      Creates a deep copy of the genome, duplicating all nodes and connections.
+      
+      - **Step 1**: Initializes a new genome with the same inputs and outputs.
+      - **Step 2**: Copies each node from `nodeGenes` into the new genome, maintaining node properties.
+      - **Step 3**: Recreates connections:
+         - Finds matching nodes in the new genome for each connection.
+         - Reconstructs connections using the new nodes, preserving weights, states, and innovation numbers.
+      - **Step 4**: Updates each node's `oldConnection` to match the cloned connections.
+      - **Step 5**: Copies metadata (layers, IDs) and ensures the bias node is set correctly.
+      - **Step 6**: Updates connections in the new genome for consistency.
+      
+      Returns a fully independent clone of the original genome.
+     */
+
     deepClone(){
         let newGenome = new genome(this.inputs,this.outputs);
         newGenome.nodeGenes = [];
         newGenome.connectionGenes = [];
         //Add nodeGenes array to new genome
-        for(let i = 0;i < this.nodeGenes.length;i++){
-            newGenome.nodeGenes.push(this.nodeGenes[i].shallowClone());
+        for(let nodeGene = 0; nodeGene < this.nodeGenes.length; nodeGene++){
+            newGenome.nodeGenes.push(this.nodeGenes[nodeGene].shallowClone());
         }
 
-        for(let i = 0;i < newGenome.nodeGenes.length;i++){
+        // TODO: Maybe there's a more effecient way than n^3
+        for(let ngNodeIndex1 = 0; ngNodeIndex1 < newGenome.nodeGenes.length; ngNodeIndex1++){
+            let ngNodeFrom = newGenome.nodeGenes[ngNodeIndex1];
             //For each of the connections connected to each of the nodes
-            for(let ii = 0; ii < newGenome.nodeGenes[i].connections.length;ii++){
+            for(let ngConnIndex = 0; ngConnIndex < ngNodeFrom.connections.length; ngConnIndex++){
+                let ngConnection = ngNodeFrom.connections[ngConnIndex];
+
                 //Find new nodeGene that matches fromGenome of the connection, and create connection using that nodeGene
                 let toNode = null;
-                for(let iii=0;iii < newGenome.nodeGenes.length; iii++){
-                    if (newGenome.nodeGenes[iii].nodeId == newGenome.nodeGenes[i].connections[ii].toNode.nodeId){
-                        toNode = newGenome.nodeGenes[iii]
+                for(let ngNodeIndex2=0; ngNodeIndex2 < newGenome.nodeGenes.length; ngNodeIndex2++){
+                    if (newGenome.nodeGenes[ngNodeIndex2].nodeId == ngConnection.toNode.nodeId){
+                        toNode = newGenome.nodeGenes[ngNodeIndex2]
                     }
                 }
-                let newConnection = new connectionGene(newGenome.nodeGenes[i],toNode,newGenome.nodeGenes[i].connections[ii].weight,newGenome.nodeGenes[i].connections[ii].innovationNumber);
-                newConnection.enabled = newGenome.nodeGenes[i].connections[ii].enabled;
+                let newConnection = new connectionGene(ngNodeFrom,toNode,ngConnection.weight,ngConnection.innovationNumber);
+                newConnection.enabled = ngConnection.enabled;
                 newGenome.connectionGenes.push(newConnection);
             }
         }
@@ -295,7 +313,6 @@ class genome{
         newGenome.nodeGenes[this.biasNode].weight = 1;
         newGenome.updateNodeConnections();
         return newGenome;
-        
     }
 
     // Returns total weight difference between thisgenome and genome2
@@ -401,17 +418,19 @@ class genome{
 
     // Assuming that this is the more fit Genome parent1 = this,parent2 = parentGenome2
     crossOver(parentGenome2){
+
+        // TODO: Change from doing n^2 check of connections to sorting and then 2 pointers
         let babyGenome = this.deepClone();
 
-        //Keep the topology of the most fit parent(this), but 50% use weights of parent1, 50% parent2, if connection shares innovationNumber
-        for(let i = 0;i < babyGenome.connectionGenes.length;i++){
+        // Keep the topology of the most fit parent(this), but 50% use weights of parent1, 50% parent2, if connection shares innovationNumber
+        for(let babyConnection = 0; babyConnection < babyGenome.connectionGenes.length; babyConnection++){
 
             //See if parentGenome2 has matching connection
-            for(let ii = 0;ii < parentGenome2.connectionGenes.length;ii++){
-                if(babyGenome.connectionGenes[i].innovationNumber == parentGenome2.connectionGenes[ii].innovationNumber){
+            for(let parentConnection = 0; parentConnection < parentGenome2.connectionGenes.length; parentConnection++){
+                if(babyGenome.connectionGenes[babyConnection].innovationNumber == parentGenome2.connectionGenes[parentConnection].innovationNumber){
                     let rand = Math.random();
                     if (rand >0.5){
-                        babyGenome.connectionGenes[i].weight = parentGenome2.connectionGenes[ii].weight;
+                        babyGenome.connectionGenes[babyConnection].weight = parentGenome2.connectionGenes[parentConnection].weight;
                     }
                 }
             }
@@ -432,8 +451,6 @@ class genome{
     
         context.moveTo(fromx, fromy);
         context.lineTo(tox, toy);
-    
-    
       }
 
     //Set up the canvas and node positions/size

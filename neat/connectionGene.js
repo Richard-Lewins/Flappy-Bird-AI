@@ -12,10 +12,8 @@ class connectionGene{
         this.innovationNumber = innovationNumber;
     }
 
-    //Get a random number between min(inclusive) and max(exclusive)
-    randomRange(min,max){
-        return Math.random()*(max-min) + min;
-    }
+    
+
 
     //Returns Random Number between -1 and 1, but centred around 0(For slightly changing weights)
     centeredRandom(){
@@ -51,4 +49,3 @@ class connectionGene{
     //ToDo: areTwoNodesConnected() -Check if two nodes have connection in between
 
 }
-

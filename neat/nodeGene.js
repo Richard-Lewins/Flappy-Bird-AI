@@ -22,7 +22,7 @@ class nodeGene{
         return 1.0 / (1.0 + Math.pow(Math.E, -4.9 * x));
     }
 
-    //Sends Output of this node through connectionGene to All genes connected to
+    // Sends Output of this node through connectionGene to All genes connected to
     sendOutput(){
         let activatedValue = this.inputValue;
         if(this.layer != 0){ //Don't sigmoid input nodes
@@ -36,7 +36,7 @@ class nodeGene{
             }
         }
     }
-    
+
     /* Clones the node, but not the connections (this is a job for the genome) */
     shallowClone(){
         let newNode = new nodeGene(this.layer,this.nodeId);
