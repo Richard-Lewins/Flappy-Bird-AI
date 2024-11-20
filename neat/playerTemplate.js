@@ -16,45 +16,45 @@ class player{
         this.fitness = 0;
     }
 
-    resetPlayer(){
+    resetPlayer() {
         this.alive = true;
         this.fitness = 0;
     }
 
     // Draw the player on the screen
-    drawPlayer(ctx,img){
+    drawPlayer(ctx,img) {
         // Implement this function
     }
 
     // Use the outputs to decide what the player should do
-    updatePlayer(){
+    updatePlayer() {
         // Implement this function
     }
 
     // Get the inputs of the player from whatever game you're using
-    updateInputs(){
+    updateInputs() {
         // Implement this function
     }
 
     // Get the outputs of the player
-    getOutputs(){
+    getOutputs() {
         this.outputs = this.playerGenome.feedForward(this.inputs)
         // Add other features
     }
 
     // Get the score of the player
-    getScore(){
+    getScore() {
         // Implement this function
     }
 
     // After updating the player, check if the player died
-    checkIfPlayerDead(){
+    checkIfPlayerDead() {
         // Implement this function
         // this.alive = ....
     }
 
     // Activation Function
-    linearActivation(x,min,max){
+    linearActivation(x,min,max) {
         return (x-min)/(max-min);
     }
 

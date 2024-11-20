@@ -76,14 +76,14 @@ let birdPopulation = new population(1000); // Create NEAT population
 
 var gameOver = false;
 
-function drawPipes(){
-    for(var i = 0;i < pipes.length ;i++){
+function drawPipes() {
+    for(var i = 0;i < pipes.length ;i++) {
         ctx.drawImage(imgPipeTop,pipes[i].x,pipes[i].y, pipeWidth, pipeLength); //Draw Top pipe
         ctx.drawImage(imgPipeBottom,pipes[i].x, pipes[i].y + pipeLength + pipeGap, pipeWidth, pipeLength); //Draw Bottom pipe
         pipes[i].x = pipes[i].x - pipeSpeed; //Move pipe to the left
 
         //If the pipe is a distanceBetweenPipes from the right, create a new pipe on the right
-        if(pipes[i].x == flappyCanvas.width - distanceBetweenPipes){
+        if(pipes[i].x == flappyCanvas.width - distanceBetweenPipes) {
             pipes.push(
                 {
                 x : flappyCanvas.width,
@@ -94,18 +94,18 @@ function drawPipes(){
     }
 
     //To ensure that there is a maximum of five pipes in the pipes array
-    if (pipes.length > 5){
+    if (pipes.length > 5) {
         pipes.shift();
     }
 }
 
-function drawFloor(){
+function drawFloor() {
     //Add Floor
     positionOfFloor = positionOfFloor - pipeSpeed;
     if (positionOfFloor <= -floorHeight) positionOfFloor = 0;
     let groundCovered = positionOfFloor; //To ensure that the whole of the floor is covered
 
-    while(groundCovered < flappyCanvas.width){
+    while(groundCovered < flappyCanvas.width) {
         ctx.drawImage(imgFloor,groundCovered,flappyCanvas.height-floorHeight)
         groundCovered = groundCovered + floorHeight;
     }
@@ -114,18 +114,18 @@ function drawFloor(){
 
 
 document.addEventListener("keydown",handleKeyDown);
-function handleKeyDown(e){
-    if (e.keyCode == 32){
+function handleKeyDown(e) {
+    if (e.keyCode == 32) {
         //moveUp();
         newPlayer.moveUp();
     }
-    if (e.keyCode == 13 && gameOver){
+    if (e.keyCode == 13 && gameOver) {
         reset();
     }
 }
 
 
-function reset(){
+function reset() {
     //Return Variables to default
     gameOver = false;
     pipes = [];
@@ -143,16 +143,16 @@ function reset(){
 
 let bestPlayer = birdPopulation.players[0];
 
-function draw(){
-    if(!gameOver){
-        for(let i = 0;i<speedSpinner.value;i++){
+function draw() {
+    if(!gameOver) {
+        for(let i = 0;i<speedSpinner.value;i++) {
             ctx.fillRect(0, 0, flappyCanvas.width, flappyCanvas.height);
             drawPipes();
             drawFloor();
 
             birdPopulation.run(); // Run NEAT algorithm
             let newBest = birdPopulation.getBestPlayer()
-            if(newBest.fitness > bestPlayer.fitness){
+            if(newBest.fitness > bestPlayer.fitness) {
                 bestPlayer = newBest;
                 bestPlayer.playerGenome.setup(genomeCanvas,10);
                 bestPlayer.playerGenome.draw();
@@ -163,7 +163,7 @@ function draw(){
             aliveLabel.innerText = `Alive: ${birdPopulation.players.length - birdPopulation.deadCount}`;
 
             // If everyone in the current generation died, restart with new generation
-            if(birdPopulation.gameOver){
+            if(birdPopulation.gameOver) {
                 gameOver = true;
                 reset();
                 break;

@@ -1,5 +1,5 @@
 class species{
-    constructor(){
+    constructor() {
         this.speciatedPlayers = [];
         //coefficients for testing compatibility
         this.excessCoeff = 1;
@@ -9,11 +9,9 @@ class species{
     }
 
     // Add a player to this species
-    addPlayer(player){
+    addPlayer(player) {
         this.speciatedPlayers.push(player);
     }
-
-    // NEAT Algorithm speciation from Kenneth O. Stanley and Risto Miikkulainen
 
     /**
      * Determines if a given player belongs to this species based on compatibility metrics.
@@ -23,7 +21,7 @@ class species{
      * - Disjoint genes - Number of genes that exist on both genomes but do not match up
      * - Average weight differences
      */
-    belongsInSpecies(player){
+    belongsInSpecies(player) {
     
         // Get the length of the largest genome
         let N = Math.max(this.speciatedPlayers[0].playerGenome.connectionGenes.length, player.playerGenome.connectionGenes.length);
@@ -40,7 +38,7 @@ class species{
     }
 
     // Kill worse half of the species
-    killHalf(){
+    killHalf() {
         this.orderSpeciesByFitness();
         
         let median = this.speciatedPlayers.length/2;
@@ -48,7 +46,7 @@ class species{
     }
 
     // Kill below average players (Not used in this implementation)
-    killBelowAverage(){
+    killBelowAverage() {
         let averageFitness = this.getTotalSpeciesFitness()/this.speciatedPlayers.length;
 
         let aboveAveragePlayers = this.speciatedPlayers.filter(Player => {Player.fitness > averageFitness});
@@ -57,7 +55,7 @@ class species{
     }
 
     // Get a baby from two random parents in the species
-    getBaby(){
+    getBaby() {
         let parent1 = this.speciatedPlayers[Math.floor(randomRange(0,this.speciatedPlayers.length))];
         let parent2 = this.speciatedPlayers[Math.floor(randomRange(0,this.speciatedPlayers.length))];
         let babyGenome = parent1.playerGenome.crossOver(parent2.playerGenome);
@@ -69,10 +67,10 @@ class species{
     }
 
     // Get the total fitness of the species
-    getTotalSpeciesFitness(){
+    getTotalSpeciesFitness() {
         let total = 0;
 
-        for(let i = 0;i < this.speciatedPlayers.length;i++){
+        for(let i = 0;i < this.speciatedPlayers.length;i++) {
             total += this.speciatedPlayers[i].fitness;
         }
 
@@ -80,7 +78,7 @@ class species{
     }
 
     //Highest Fitness first
-    orderSpeciesByFitness(){
+    orderSpeciesByFitness() {
         this.speciatedPlayers.sort((a,b) => (a.fitness < b.fitness) ? 1 : ((b.fitness < a.fitness) ? -1 : 0))
     }
 }

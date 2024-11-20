@@ -4,7 +4,7 @@
 */
 
 class connectionGene{
-    constructor(fromNode,toNode,weight,innovationNumber){
+    constructor(fromNode,toNode,weight,innovationNumber) {
         this.fromNode = fromNode;
         this.toNode = toNode;
         this.weight = weight;
@@ -16,9 +16,9 @@ class connectionGene{
 
 
     //Returns Random Number between -1 and 1, but centred around 0(For slightly changing weights)
-    centeredRandom(){
+    centeredRandom() {
         let rand = 0; //Betweeen 0 and 1
-        for(let i=0;i<6;i++){
+        for(let i=0;i<6;i++) {
             rand += Math.random();
         }
 
@@ -28,7 +28,7 @@ class connectionGene{
     }
 
     //Mutates the weight of this ConnectionGene
-    mutateWeight(){
+    mutateWeight() {
         var changeType = Math.random();
 
         if (changeType < 0.1) { //Completely Change at Random Weight
